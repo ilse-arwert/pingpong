@@ -76,23 +76,29 @@ void loop() {
  
     if (Serial.parseInt() == 1 ){
       currentX++;
+//      char my_string[3] = String(currentX);
+      Serial.write(currentX);
     }
     if (Serial.parseInt() == 2){
       currentX--;
+      Serial.write(currentX);
     }
     if (Serial.parseInt() == 3){
       currentY++;
+      Serial.write(currentY);
     }
     if (Serial.parseInt() == 4){
       currentY--;
+      Serial.write(currentY);
     }
     if (Serial.parseInt() == 5){
       currentX = x0;
       currentY = y0;
+      Serial.write(currentX);
+      Serial.write(currentY);
     }
   }
   
- 
 
 //  currentX++;
   xServo.write(currentX);
