@@ -14,16 +14,16 @@ Servo xServo;
 Servo yServo; 
 
 // center point
-int x0 = 90;
-int y0 = 90;
+const int x0 = 90;
+const int y0 = 90;
 
 // angle to edge
 // only W and S need to be entered manually
 
-int w = 122;
-int s = 108;
-int e = x0 - (w - x0);
-int n = y0 - (s - y0);
+const int w = 122;
+const int s = 108;
+const int e = x0 - (w - x0);
+const int n = y0 - (s - y0);
 
 float xPos = x0;
 float yPos = y0;
