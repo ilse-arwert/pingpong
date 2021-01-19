@@ -7,29 +7,34 @@ Serial port;
 void setup() {
   printArray(Serial.list());
 
-  port = new Serial(this, Serial.list()[0], 9600);
+  port = new Serial(this, Serial.list()[2], 9600);
+  port.bufferUntil('\n');
 }
 
 // up 0 down 1 left 2 right 3 reset 4
 
 void draw() {
+   
   if (keyPressed) {
     if (key ==  'w') {
-      port.write(1);
+      port.write("1\n");
+      //print('w');
     }
     if (key ==  's') {
-      port.write(2);
+      port.write("2\n");
     }
     if (key ==  'a') {
-      port.write(3);
+      port.write("3\n");
     }
     if (key ==  'd') {
-      port.write(4);
+      port.write("4\n");
     }
     if (key ==  'r') {
-      port.write(5);
+      port.write("5\n");
     }
-  } else {
-    port.write(0);
+  } 
+  
+  if (port.available() > 0){
+    print(port.read());
   }
 }

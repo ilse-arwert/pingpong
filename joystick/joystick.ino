@@ -51,6 +51,10 @@ struct tuple {
   double y;
 };
 
+int currentX = x0;
+int currentY = y0;
+
+
 void setup() {
   Serial.begin(9600);
   pinMode(buzzer, OUTPUT);
@@ -62,98 +66,44 @@ void setup() {
   yServo.write(20);
   delay(500);
 
-  //read light levels
-  baseMiddleLight = analogRead(middleSensorPin);
-  baseUpperLight = analogRead(upperSensorPin);
-  baseLowerLight = analogRead(lowerSensorPin);
-  
-  moveSlow(x0, y0);
 
-  //signal that the game is about to start!
-  tone(buzzer, 500);
-  delay(1000);
-  
-  if(currentPlayer == "right") moveSlow(C, 0);
-  else moveSlow(B, 0);
+//  moveSlow(x0, y0);
+
 }
 
 void loop() {
-  unsigned long startMillis = millis();
-  currentMiddleLight = analogRead(middleSensorPin);
-  currentUpperLight = analogRead(upperSensorPin);
-  currentLowerLight = analogRead(lowerSensorPin);
-
-  //wait until the 3 sec deadline has passed or we register a reflected light
-  while ((currentMiddleLight - baseMiddleLight) < 100 && (currentUpperLight - baseUpperLight) < 100 && (currentLowerLight - baseLowerLight) < 100 && (millis() - startMillis) < 3000) {
-    currentMiddleLight = analogRead(middleSensorPin);
-    currentUpperLight = analogRead(upperSensorPin);
-    currentLowerLight = analogRead(lowerSensorPin);
+  if (Serial.available()){
+ 
+    if (Serial.parseInt() == 1 ){
+      currentX++;
+    }
+    if (Serial.parseInt() == 2){
+      currentX--;
+    }
+    if (Serial.parseInt() == 3){
+      currentY++;
+    }
+    if (Serial.parseInt() == 4){
+      currentY--;
+    }
+    if (Serial.parseInt() == 5){
+      currentX = x0;
+      currentY = y0;
+    }
   }
   
-  if ((millis() - startMillis) > 3000) {
-    //the player didn't reflect the light. sound the buzzer and stop the game.
-    //to do: keep playing instead of stopping, maybe add a scorekeeping system?
-    tone(buzzer, 1000, 1000);
-    while(1); 
-  }
+ 
 
-  if ((currentMiddleLight - baseMiddleLight) > 100) {
-    if (currentPlayer == "right") moveSlow(XYtoAngles(B, 0));
-    else moveSlow(XYtoAngles(C, 0));
-  }
-
-  else if ((currentUpperLight - baseUpperLight) > 100) {
-    if (currentPlayer == "right") moveSlow(XYtoAngles(B, A));
-    else moveSlow(XYtoAngles(C, A));
-  }
-
-  else if ((currentLowerLight - baseLowerLight) > 100) {
-    if (currentPlayer == "right") moveSlow(XYtoAngles(B, D));
-    else moveSlow(XYtoAngles(C, D));
-  }
-
-  if (currentPlayer == "right") currentPlayer = "left";
-  else currentPlayer = "right";
+//  currentX++;
+  xServo.write(currentX);
+  yServo.write(currentY);
 }
 
-void moveSlow(int xAngle, int yAngle){
-  int dx = abs(xServo.read() - xAngle);
-  int dy = abs(yServo.read() - yAngle);
 
-  for(int i = 0; i < 20; i++) {
-    if(xServo.read() < xAngle) xServo.write(xServo.read()+floor(dx/20));
-    else xServo.write(xServo.read()-floor(dx/20));
-    if(yServo.read() < yAngle) yServo.write(yServo.read()+floor(dy/20));
-    else yServo.write(yServo.read()-floor(dy/20));
-    delay(30);
-  }
 
-  xServo.write(xAngle);
-  yServo.write(yAngle);
-}
-
-//void moveSlow(int xAngle, int yAngle){
-//
-//  while(xServo.read() != xAngle || yServo.read() != yAngle){
-//    if(xServo.read() < xAngle){
-//      xServo.write(xServo.read()+1);
-//    }
-//    if(xServo.read() > xAngle){
-//      xServo.write(xServo.read()-1);
-//    }
-//    if(yServo.read() < yAngle){
-//      yServo.write(yServo.read()+1);
-//    }
-//    if(yServo.read() > yAngle){
-//      yServo.write(yServo.read()-1);
-//    }
-//    delay(30);
-//  }
+//void moveSlow(struct tuple ang){
+//  moveSlow(ang.x, ang.y);
 //}
-
-void moveSlow(struct tuple ang){
-  moveSlow(ang.x, ang.y);
-}
 
 double toDegrees(double radians) {
     return radians * (180.0 / PI);
