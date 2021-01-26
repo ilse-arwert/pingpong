@@ -2,25 +2,26 @@
 #include <math.h>
 
 //the table:
-//          N
-//    ------.------ 
-// W |      ,      | E
-//   |             |
-//    ------'------
-//          S
+//        + N
+//   --------------- 
+//   |      1      | 
+// W | +    2    - | E
+//   |      3      |
+//   ---------------
+//        - S
 
 // declare servo
 Servo xServo;          
 Servo yServo; 
 
 // center point
-const int x0 = 90;
-const int y0 = 90;
+const int x0 = 84;
+const int y0 = 91;
 
 // angle to edge
 // only W and S need to be entered manually
 
-const int w = 122;
+const int w = 117;
 const int s = 108;
 const int e = x0 - (w - x0);
 const int n = y0 - (s - y0);
@@ -28,7 +29,26 @@ const int n = y0 - (s - y0);
 float xPos = x0;
 float yPos = y0;
 
-float gameState = 0;
+// sensors on or off
+bool sensor1 = false;
+bool sensor2 = false;
+bool sensor3 = false;
+
+// who is playing, either 'e' or 'w'
+char currentPlayer;
+
+// scoring threshold, how many degrees over the table edge
+const int ScoreDegreeThreshold = 8;
+// sensor degree trigger threshold, how many degrees away from center to be able to trigger sensor
+const int SensorDegreeThreshold = 5;
+// sensor light treshold in order to change on/off
+const int SensorLightThreshold = 50;
+
+// change initial speed
+float moveSpdInit = 0.2;
+float moveSpd = moveSpdInit;
+// change speed increment per move
+float moveSpdIncr = 0.02;
 
 void setup() {
   // attach servos
@@ -36,60 +56,21 @@ void setup() {
   yServo.attach(7);
   Serial.begin(9600);
 
+  // random seed for which player starts
+  randomSeed(analogRead(6));
+  // initialise sensors
+  sensorInit();
+
+  // start the game
+  newRound();
+  
 }
 
 void loop() {
 
-  // run one of the two, not both
-  moveCircle();
-  // moveCorners();
+  gameUpdate();
+
   
   // some delay is needed otherwise servo goes crazy
   delay(25);
-}
-
-void moveCorners(){
-    if (gameState == 0){
-    goTo(x0, y0);
-    delay(200);
-    gameState++;
-  }
-
-  if (gameState == 1){
-    goTowards(e, n, 1);
-    nextState(e, n);  
-  }
-  
-  if (gameState == 2){
-    goTowards(e, s, 1);
-    nextState(e, s);  
-  }
-  
-  if (gameState == 3){
-    goTowards(w, n, 2);
-    nextState(w, n);  
-  }
-
-  if (gameState == 4){
-    goTowards(w, s, 1);
-    nextState(w, s);  
-  }
-  if (gameState == 5){
-    gameState = 0;
-  }
-}
-
-void moveCircle(){
-  int r = n - y0;
-  float tX = sin(gameState/20)* r;
-  float tY = cos(gameState/20)* r ;
-  goTowards(x0 + tX, y0 + tY, 1);
-  nextState(x0 + tX, y0 + tY);
-}
-
-void nextState(float tX, float tY){
-  // if target matches position
-  if (tX == xPos && tY == yPos){
-    gameState++;
-  }
 }

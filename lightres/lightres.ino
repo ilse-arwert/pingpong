@@ -11,7 +11,7 @@ void setup() {
 }
 
 void loop() {
-  plotPin(middlePin);
+  plotPin(southPin);
 }
 
 void printAllPins() {
