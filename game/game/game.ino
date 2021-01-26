@@ -40,15 +40,17 @@ char currentPlayer;
 // scoring threshold, how many degrees over the table edge
 const int ScoreDegreeThreshold = 8;
 // sensor degree trigger threshold, how many degrees away from center to be able to trigger sensor
-const int SensorDegreeThreshold = 5;
+const int SensorDegreeThreshold = 7;
 // sensor light treshold in order to change on/off
-const int SensorLightThreshold = 50;
+const int SensorLightThreshold = 20;
 
 // change initial speed
 float moveSpdInit = 0.2;
 float moveSpd = moveSpdInit;
 // change speed increment per move
-float moveSpdIncr = 0.02;
+float moveSpdIncr = 0.05;
+
+int ledPin = 2;
 
 void setup() {
   // attach servos
@@ -56,21 +58,22 @@ void setup() {
   yServo.attach(7);
   Serial.begin(9600);
 
+  pinMode(ledPin, OUTPUT);
+
   // random seed for which player starts
   randomSeed(analogRead(6));
   // initialise sensors
   sensorInit();
 
   // start the game
-  newRound();
-  
+  newRound(); 
 }
 
 void loop() {
 
   gameUpdate();
 
-  
+
   // some delay is needed otherwise servo goes crazy
   delay(25);
 }

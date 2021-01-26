@@ -1,14 +1,19 @@
-//TODO: Should we turn sensors into an array (sensorPin[] sensorBase[] etc) so that we can loop over them?
-
 // pins
 const int sensor1Pin = 2;
 const int sensor2Pin = 0;
 const int sensor3Pin = 4;
 
-// base value
-int sensor1Base;
-int sensor2Base;
-int sensor3Base;
+// current average base value
+float sensor1Base;
+float sensor2Base;
+float sensor3Base;
+
+//vectors holding the base values
+int BaseAveragingCount = 16;
+int sensor1Bases [16];
+int sensor2Bases [16];
+int sensor3Bases [16];
+int currentIndex = 0;
 
 // current value
 int sensor1Current;
@@ -20,6 +25,11 @@ void sensorInit(){
   sensor1Base = analogRead(sensor1Pin);
   sensor2Base = analogRead(sensor2Pin);
   sensor3Base = analogRead(sensor3Pin);
+  for (int i = 0; i < BaseAveragingCount; i++) {
+    sensor1Bases[i] = sensor1Base;
+    sensor2Bases[i] = sensor2Base;
+    sensor3Bases[i] = sensor3Base;
+  }
 }
 
 // sets sensor1/2/3 values to true/false.
@@ -28,6 +38,10 @@ void sensorUpdate(){
   sensor1Current = analogRead(sensor1Pin);
   sensor2Current = analogRead(sensor2Pin);
   sensor3Current = analogRead(sensor3Pin);
+
+  // Serial.println("Before updating: ");
+  // printArrays();
+  updateBaseline(sensor1Current, sensor2Current, sensor3Current);
   
   if ((sensor1Current - sensor1Base) > SensorLightThreshold){
     sensor1 = true;
@@ -44,4 +58,69 @@ void sensorUpdate(){
   } else {
     sensor3 = false;
   }
+}
+
+void updateBaseline(int s1, int s2, int s3) {
+  //als er geen licht op de sensors staat, updaten we de baselines
+  if (s1-sensor1Base < SensorLightThreshold && s2-sensor2Base < SensorLightThreshold && s3-sensor3Base < SensorLightThreshold){
+//    Serial.println("Updating the baselines");
+    currentIndex += 1;
+    currentIndex = currentIndex % BaseAveragingCount;
+    sensor1Bases[currentIndex] = s1;
+    sensor2Bases[currentIndex] = s2;
+    sensor3Bases[currentIndex] = s3;
+    
+    // printArrays();
+    int sum1 = 0;
+    int sum2 = 0;
+    int sum3 = 0;
+
+    for (int i = 0; i < BaseAveragingCount; i++) {
+      sum1 += sensor1Bases[i];
+    }
+    for (int i = 0; i < BaseAveragingCount; i++) {
+      sum2 += sensor2Bases[i];
+    }
+    for (int i = 0; i < BaseAveragingCount; i++) {
+      sum3 += sensor3Bases[i];
+    }
+    
+    sensor1Base = sum1/BaseAveragingCount;
+    sensor2Base = sum2/BaseAveragingCount;
+    sensor3Base = sum3/BaseAveragingCount;
+
+    Serial.print(sensor1Base);
+    Serial.print(",");
+    Serial.print(sensor2Base);
+    Serial.print(",");
+    Serial.println(sensor3Base);
+  }
+}
+
+void printBases() {
+  Serial.println("Sensor 1: ");
+  Serial.println("Base value: " + String(sensor1Base));
+  Serial.println("Current value: " + String(sensor1Current));
+  Serial.println("Sensor 2: ");
+  Serial.println("Base value: " + String(sensor2Base));
+  Serial.println("Current value: " + String(sensor2Current));
+  Serial.println("Sensor 3: ");
+  Serial.println("Base value: " + String(sensor3Base));
+  Serial.println("Current value: " + String(sensor3Current));
+}
+
+void printArrays() {
+  Serial.println("Base values sensor 1:");
+  for (int i = 0; i < BaseAveragingCount; i++) {
+    Serial.println(sensor1Bases[i]);
+  }
+  Serial.println("Base values sensor 2:");
+  for (int i = 0; i < BaseAveragingCount; i++) {
+    Serial.println(sensor2Bases[i]);
+  }
+  Serial.println("Base values sensor 3:");
+  for (int i = 0; i < BaseAveragingCount; i++) {
+    Serial.println(sensor3Bases[i]);
+  }
+  Serial.println();
 }

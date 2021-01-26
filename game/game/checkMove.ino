@@ -18,14 +18,14 @@ void checkMove(){
 }
 
 void nextMove(){
-  // TODO: Add sound to signal move made.
-  
   // check if light is on player side
   if (currentPlayer == 'e' && xPos < x0 ){
+    playHitSound();
     currentPlayer = 'w';
     moveSpd += moveSpdIncr;
   } 
   if (currentPlayer == 'w' && xPos > x0 ){
+    playHitSound();
     currentPlayer = 'e';
     moveSpd += moveSpdIncr;
   }

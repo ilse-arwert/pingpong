@@ -21,16 +21,22 @@ void gameUpdate(){
 
 void newRound(){
   // TODO: add beeping sound to signal new round
+  playNewRoundSound();
 
-  printScore();
+  // printScore();
   
   // reset move speed
   moveSpd = moveSpdInit;
   // reset position
   goTo(x0, y0);
+
+  digitalWrite(ledPin, HIGH);
   
   //wait before starting new round
-  delay(500);
+  delay(1000);
+
+  digitalWrite(ledPin, LOW);
+  
   // select random player
   if (random(2) < 1){
     currentPlayer = 'w';

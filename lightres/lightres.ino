@@ -1,6 +1,10 @@
-int northPin = A0;
-int middlePin = A2;
-int southPin = A4;
+//int northPin = A0;
+//int middlePin = A2;
+//int southPin = A4;
+
+int northPin = A4;
+int middlePin = A0;
+int southPin = A2;
 
 void setup() {
   // declare the ledPin as an OUTPUT:
@@ -11,7 +15,7 @@ void setup() {
 }
 
 void loop() {
-  plotPin(southPin);
+  plotPin(northPin);
 }
 
 void printAllPins() {
