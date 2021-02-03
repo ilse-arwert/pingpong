@@ -16,12 +16,10 @@ void gameUpdate(){
   
   // check if we're over an edge
   checkScore();
-  
 }
 
 void newRound(){
-  // TODO: add beeping sound to signal new round
-  playNewRoundSound();
+//  playNewRoundSound();
 
   // printScore();
   

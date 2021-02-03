@@ -62,7 +62,6 @@ void sensorUpdate(){
 
 void updateBaseline(int s1, int s2, int s3) {
   //als er geen licht op de sensors staat, updaten we de baselines
-  if (s1-sensor1Base < SensorLightThreshold && s2-sensor2Base < SensorLightThreshold && s3-sensor3Base < SensorLightThreshold){
 //    Serial.println("Updating the baselines");
     currentIndex += 1;
     currentIndex = currentIndex % BaseAveragingCount;
@@ -89,12 +88,9 @@ void updateBaseline(int s1, int s2, int s3) {
     sensor2Base = sum2/BaseAveragingCount;
     sensor3Base = sum3/BaseAveragingCount;
 
-    Serial.print(sensor1Base);
-    Serial.print(",");
     Serial.print(sensor2Base);
     Serial.print(",");
-    Serial.println(sensor3Base);
-  }
+    Serial.println(sensor2Current);
 }
 
 void printBases() {

@@ -5,6 +5,10 @@
 // required for demo
 float gameState = 0;
 
+void toCenter(){
+  goTo(x0,y0);
+}
+
 void moveCorners(){
     if (gameState == 0){
     goTo(x0, y0);
