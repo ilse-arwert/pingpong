@@ -22,18 +22,24 @@ void newRound(){
 //  playNewRoundSound();
 
   // printScore();
+  // display score:
+  lcdUpdate();
   
   // reset move speed
   moveSpd = moveSpdInit;
   // reset position
   goTo(x0, y0);
 
+  // turn off laser
   digitalWrite(ledPin, HIGH);
   
   //wait before starting new round
-  delay(1000);
+  delay(3000);
 
+  // turn on laser
   digitalWrite(ledPin, LOW);
+  // change lcd back to title
+  lcdPong();
   
   // select random player
   if (random(2) < 1){

@@ -1,7 +1,7 @@
 // pins
 const int sensor1Pin = 2;
 const int sensor2Pin = 0;
-const int sensor3Pin = 4;
+const int sensor3Pin = 1;
 
 // current average base value
 float sensor1Base;

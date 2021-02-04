@@ -1,5 +1,8 @@
 #include <Servo.h> 
 #include <math.h>
+#include <Wire.h> // Library for I2C communication
+#include <LiquidCrystal_I2C.h> // Library for LCD
+
 
 //the table:
 //        + N
@@ -9,6 +12,9 @@
 //   |      3      |
 //   ---------------
 //        - S
+
+// blue is west
+// red is east
 
 // declare servo
 Servo xServo;          
@@ -45,12 +51,18 @@ const int SensorDegreeThreshold = 7;
 const int SensorLightThreshold = 20;
 
 // change initial speed
-float moveSpdInit = 0.2;
+float moveSpdInit = 0.3;
 float moveSpd = moveSpdInit;
 // change speed increment per move
 float moveSpdIncr = 0.05;
 
 int ledPin = 2;
+
+// scores
+int wPlayer = 0;
+int ePlayer = 0;
+
+LiquidCrystal_I2C lcd = LiquidCrystal_I2C(0x27, 16, 2);
 
 void setup() {
   // attach servos
@@ -59,6 +71,9 @@ void setup() {
   Serial.begin(9600);
 
   pinMode(ledPin, OUTPUT);
+  lcd.init();
+  lcd.backlight();
+  lcdPong();
 
   // random seed for which player starts
   randomSeed(analogRead(6));
