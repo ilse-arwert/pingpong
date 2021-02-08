@@ -4,14 +4,14 @@ void checkScore(){
     // east gets a points
     lcdRed();
     ePlayer ++;
-    playScore(wPlayer, ePlayer);
+    playPlayerEastSound();
     newRound();
   }
   if (xPos < e - ScoreDegreeThreshold){
     // west gets a points
     lcdBlue();
     wPlayer ++;
-    playScore(wPlayer, ePlayer);
+    playPlayerWestSound();
     newRound();
   }
 }
