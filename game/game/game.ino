@@ -66,8 +66,8 @@ LiquidCrystal_I2C lcd = LiquidCrystal_I2C(0x27, 16, 2);
 
 void setup() {
   // attach servos
-  xServo.attach(4);
-  yServo.attach(7);
+  xServo.attach(6); // geel
+  yServo.attach(7); // oranje
   Serial.begin(9600);
 
   pinMode(ledPin, OUTPUT);
